@@ -40,7 +40,7 @@ issue statuses according to the build results.
 When a mergebot requires a Issue Tracker plug to work, you can select a Jira Plug Configuration.
 
 <p align="center">
-  <img alt="Issue Tracker plug select" src="https://raw.githubusercontent.com/mig42/jiraplug/master/doc/img/issuetracker-plug-select.png" />
+  <img alt="Issue Tracker plug select" src="https://raw.githubusercontent.com/PlasticSCM/jiraplug/master/doc/img/issuetracker-plug-select.png" />
 </p>
 
 You can either select an existing configuration or create a new one.
@@ -49,7 +49,7 @@ When you create a new Jira Plug Configuration, you have to fill in the following
 
 <p align="center">
   <img alt="Jiraplug configuration example"
-       src="https://raw.githubusercontent.com/mig42/jiraplug/master/doc/img/configuration-example.png" />
+       src="https://raw.githubusercontent.com/PlasticSCM/jiraplug/master/doc/img/configuration-example.png" />
 </p>
 
 ## Jira Configuration
