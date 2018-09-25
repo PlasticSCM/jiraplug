@@ -1,0 +1,4 @@
+#!/bin/sh
+
+JIRAPLUG_BIN_DIR=`dirname \`readlink -fn $0\``
+exec "/opt/plasticscm5/server/mono_setup" jiraplug mono "$JIRAPLUG_BIN_DIR/jiraplug.exe" "$@"

@@ -1,0 +1,20 @@
+﻿[
+   {
+      "name":"url",
+      "displayName":"Jira URL",
+      "type":"string",
+      "description":"The base URL of your Jira server."
+   },
+   {
+      "name":"user",
+      "displayName":"User",
+      "type":"string",
+      "description":"User name to connect to Jira."
+   },
+   {
+      "name":"password",
+      "displayName":"Password",
+      "type":"password",
+      "description":"Password to connect to Jira."
+   }
+]
