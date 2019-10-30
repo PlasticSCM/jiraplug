@@ -64,6 +64,54 @@ namespace JiraPlug
             }
         }
 
+        internal static bool CheckConnection(string url, string user, string passwordOrToken)
+        {
+            Uri restUri = GetBaseRestUri(url);
+            Uri uri = new Uri(restUri, MYSELF_INFO_FOR_CHECK_CONN_URI);
+            string accessToken = WebSocketRequest.BuildAccessToken(user, passwordOrToken);
+
+            try
+            {
+                HttpWebRequest request = JiraRequest.CreateAuthenticatedRequest(
+                    uri,
+                    accessToken);
+
+                string response =  JiraRequest.GetResponseAsync(request).Result;
+
+                if (string.IsNullOrEmpty(response))
+                {
+                    mLog.ErrorFormat(
+                        "Check Connection: Could not get info about the configured user." +
+                        "URL: [{0}]. User: [{1}]. Null response.",
+                        uri.AbsoluteUri, 
+                        user);
+
+                    return false;
+                }
+
+                mLog.DebugFormat(
+                    "Check Connection: OK. URL: [{0}]. User: [{1}]",
+                    uri.AbsoluteUri,
+                    user);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                    ex = ex.InnerException;
+
+                mLog.ErrorFormat(
+                    "Check Connection: Could not get info about the configured user." +
+                    "URL: [{0}]. User: [{1}]. Message:[{2}]",
+                    uri.AbsoluteUri,
+                    user,
+                    ex.Message);
+
+                return false;
+            }
+        }
+
         internal static async Task TryUpdateFieldAsync(
             string url,
             string accessToken,
@@ -212,6 +260,7 @@ namespace JiraPlug
         const string FIELDS_PROPERY = "fields";
         const string ISSUE_READ_FIELD_URI = "issue/{0}?" + FIELDS_PROPERY +"={1}";
         const string ISSUE_URI = "issue/{0}";
+        const string MYSELF_INFO_FOR_CHECK_CONN_URI = "myself";
         const string BROWSE_URI = "browse/{0}";
         const string TRANSITION_URI = "issue/{0}/transitions";
         const string BASE_URI_REST = "/rest/api/2/";

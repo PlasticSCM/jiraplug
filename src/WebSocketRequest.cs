@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using log4net;
@@ -11,7 +10,7 @@ namespace JiraPlug
         internal WebSocketRequest(Config config)
         {
             mConfig = config;
-            mAccessToken = BuildAccessToken(config);
+            mAccessToken = BuildAccessToken(config.User, config.Password);
         }
 
         internal async Task<string> ProcessMessage(string message)
@@ -133,11 +132,11 @@ namespace JiraPlug
                 requestId, "The 'getReleaseTasks' action is not implemented yet");
         }
 
-        static string BuildAccessToken(Config config)
+        internal static string BuildAccessToken(string user, string passOrToken)
         {
             return Convert.ToBase64String(
                 System.Text.Encoding.UTF8.GetBytes(
-                    string.Format("{0}:{1}", config.User, config.Password)));
+                    string.Format("{0}:{1}", user, passOrToken)));
         }
 
         Config mConfig;

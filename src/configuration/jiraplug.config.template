@@ -13,8 +13,8 @@
    },
    {
       "name":"password",
-      "displayName":"Password",
+      "displayName":"Password / API Token",
       "type":"password",
-      "description":"Password to connect to Jira."
+      "description":"Password to connect to Jira. If you are using Jira Cloud, enter the user's API token in this field instead. Go to \"https://id.atlassian.com/manage/api-tokens\" to manage the API tokens for the user configured for this JiraPlug."
    }
 ]

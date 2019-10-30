@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 using log4net;
@@ -19,6 +20,12 @@ namespace JiraPlug
 
                 ConfigureLogging(plugArgs.BotName);
 
+                mLog.InfoFormat("JiraPlug [{0}] started. Version [{1}]",
+                    plugArgs.BotName,
+                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+
+                ConfigureServicePoint();
+
                 string argsStr = args == null ? string.Empty : string.Join(" ", args);
                 mLog.DebugFormat("Args: [{0}]. Are valid args?: [{1}]", argsStr, bValidArgs);
 
@@ -31,6 +38,8 @@ namespace JiraPlug
                 CheckArguments(plugArgs);
 
                 Config config = ReadConfigFromFile(plugArgs.ConfigFilePath);
+
+                CheckConnection(config.Url, config.User, config.Password);
 
                 LaunchJiraPlug(plugArgs.WebSocketUrl, config,
                     plugArgs.BotName, plugArgs.ApiKey);
@@ -45,6 +54,30 @@ namespace JiraPlug
                 mLog.DebugFormat("StackTrace: {0}", e.StackTrace);
                 return 1;
             }
+        }
+
+        static void ConfigureServicePoint()
+        {
+            ServicePointManager.UseNagleAlgorithm = false;
+            ServicePointManager.Expect100Continue = false;
+            ServicePointManager.DefaultConnectionLimit = 500;
+            // .NET 4.0 only includes SecurityProtocolType for SSLv3 and TLSv1.0,
+            //   so we need to use the raw flag value
+            ServicePointManager.SecurityProtocol |=
+                (SecurityProtocolType)768 | // TLSv1.1
+                (SecurityProtocolType)3072; // TLSv1.2
+        }
+
+        static void CheckConnection(string url, string user, string password)
+        {
+            if (JiraRestClient.CheckConnection(url, user, password))
+                return;
+
+            throw new Exception(string.Format(
+                "Unable to contact Jira Server [{0}] using the specified credentials for user [{1}]. " + 
+                "Are you using Jira Cloud? If so, did you properly configure a Jira API token for user [{1}] " +
+                "and set it in the JiraPlug password/API Token configuration field?",
+                url, user));
         }
 
         static void LaunchJiraPlug(
